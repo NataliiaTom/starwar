@@ -64,8 +64,10 @@ const enqueueRequest = async <T>(fn: () => Promise<T>): Promise<T> => {
 };
 
 export const fetchCharacters = async (page: number) => {
+  console.log("Fetching characters for page", page);
   return retryWithExponentialBackoff(async () => {
-    const response = await axiosInstance.get(`/people/?page=${page}`);
+    const response = await axiosInstance.get(`/people/?page=${page}&limit=30`);
+    console.log("API response:", response.data);
     return response.data;
   });
 };

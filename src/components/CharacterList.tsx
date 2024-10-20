@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+import React, { useState, useEffect, } from 'react';
+import { ListItem, ListItemText, } from '@mui/material';
 import { fetchCharacters } from '../services/api';
 import { Character } from '../types';
-import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import InfiniteScroll from "react-infinite-scroll-component";
+
 
 interface CharacterListProps {
     onSelectCharacter: (character: Character) => void;
@@ -12,33 +13,39 @@ export const CharacterList: React.FC<CharacterListProps> = ({ onSelectCharacter 
     const [characters, setCharacters] = useState<Character[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const containerRef = useRef<HTMLDivElement>(null);
 
-    const loadMoreCharacters = useCallback(async () => {
+    const loadMoreCharacters = async () => {
         if (!hasMore) return;
-        const newCharacters = await fetchCharacters(page);
-        if (!newCharacters.next) {
-            setHasMore(false);
-        } else {
-            setCharacters((prevCharacters) => {
-                let ids = new Set(prevCharacters.map((c: Character) => c.id));
-                return [...prevCharacters, ...newCharacters.results.filter((c: Character) => !ids.has(c.id))];
-            });
-            setPage((prevPage) => prevPage + 1);
-        }
-    }, [page, hasMore]);
-
-    const { isFetching, setIsFetching } = useInfiniteScroll(loadMoreCharacters, containerRef);
+        fetchCharacters(page).then(newCharacters => {
+            console.log("newCharacters.next:", !newCharacters.next);
+            if (!newCharacters.next) {
+                setHasMore(false);
+            } else {
+                setCharacters((prevCharacters) => {
+                    let ids = new Set(prevCharacters.map((c: Character) => c.id));
+                    return [...prevCharacters, ...newCharacters.results.filter((c: Character) => !ids.has(c.id))];
+                });
+                setPage((p) => p + 1);
+            }
+        }).catch(error => console.error("Error fetching characters:", error))
+    };
 
     useEffect(() => {
-        loadMoreCharacters().then(() => setIsFetching(false));
-    }, [loadMoreCharacters, setIsFetching]);
+        loadMoreCharacters();
+    }, []);
 
     return (
-        <div ref={containerRef} style={{ height: '100%', overflowY: 'auto' }}>
-            <List>
+        <div id="scrollableDiv" style={{ height: '100%', overflowY: 'auto' }}>
+            <InfiniteScroll
+                dataLength={characters.length}
+                next={loadMoreCharacters}
+                hasMore={hasMore}
+                loader={<h4>Loading...</h4>}
+                scrollableTarget="scrollableDiv"
+            >
                 {characters.map((character) => (
                     <ListItem
+                        style={{ height: '100px' }}
                         key={character.url}
                         component="button"
                         onClick={() => onSelectCharacter(character)}
@@ -46,12 +53,7 @@ export const CharacterList: React.FC<CharacterListProps> = ({ onSelectCharacter 
                         <ListItemText primary={character.name} />
                     </ListItem>
                 ))}
-                {isFetching && (
-                    <ListItem>
-                        <CircularProgress />
-                    </ListItem>
-                )}
-            </List>
+            </InfiniteScroll>
         </div>
     );
 };

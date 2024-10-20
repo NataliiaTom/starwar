@@ -13,7 +13,7 @@ export const MainPage: React.FC = () => {
                 Star Wars Character Viewer
             </Typography>
             <div className="content-container">
-                <div className="character-list-container" style={{ height: 'calc(100vh - 100px)' }}>
+                <div className="character-list-container" style={{ height: 'calc(100vh - 100px)', overflowY: 'auto' }}>
                     <CharacterList onSelectCharacter={setSelectedCharacter} />
                 </div>
                 <div className="character-graph-container">

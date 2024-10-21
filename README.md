@@ -28,6 +28,8 @@ On click of any "hero" from the list hero Node with films and ships data display
 
 ### Project Screen Shot(s)
 
+<img width="852" alt="Screenshot 2024-10-21 at 16 08 27" src="https://github.com/user-attachments/assets/e39d12cb-4f6f-4fbd-8b9a-515a28237a85">
+
 ### Installation and Setup Instructions
 
 Clone down this repository. You will need node and npm installed globally on your machine.

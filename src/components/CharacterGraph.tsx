@@ -8,6 +8,7 @@ interface CharacterGraphProps {
     character: Character;
 }
 
+
 export const CharacterGraph: React.FC<CharacterGraphProps> = ({ character }) => {
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
@@ -27,18 +28,20 @@ export const CharacterGraph: React.FC<CharacterGraphProps> = ({ character }) => 
                     {
                         id: 'character',
                         type: 'input',
-                        data: { label: characterDetails.name },
+                        data: { label: characterDetails.name, emoji: '🦸‍♂️' },
                         position: { x: 250, y: 25 },
+
                     },
                     ...films.map((film, index) => ({
                         id: `film-${index}`,
-                        data: { label: film.title },
+                        data: { label: film.title, emoji: '🦸‍♂️' },
                         position: { x: 100 + index * 200, y: 150 },
                     })),
                     ...starships.map((starship, index) => ({
                         id: `starship-${index}`,
                         data: { label: starship.name },
                         position: { x: 100 + index * 200, y: 300 },
+
                     })),
                 ];
 
@@ -50,7 +53,8 @@ export const CharacterGraph: React.FC<CharacterGraphProps> = ({ character }) => 
                     })),
                     ...starships.map((_, index) => ({
                         id: `character-starship-${index}`,
-                        source: 'character',
+                        // source: 'character',
+                        source: `film-${index}`,
                         target: `starship-${index}`,
                     })),
                 ];

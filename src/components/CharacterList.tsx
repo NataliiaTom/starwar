@@ -14,7 +14,8 @@ export const CharacterList: React.FC<CharacterListProps> = ({ onSelectCharacter 
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
-    const loadMoreCharacters = async () => {
+
+    const loadMoreCharacters = () => {
         if (!hasMore) return;
         fetchCharacters(page).then(newCharacters => {
             console.log("newCharacters.next:", !newCharacters.next);
@@ -28,6 +29,8 @@ export const CharacterList: React.FC<CharacterListProps> = ({ onSelectCharacter 
                 setPage((p) => p + 1);
             }
         }).catch(error => console.error("Error fetching characters:", error))
+
+
     };
 
     useEffect(() => {
